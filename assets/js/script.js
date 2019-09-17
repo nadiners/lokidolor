@@ -1,26 +1,58 @@
-$(document).ready(function(){
+// --> DOM-VARIABLES
+let navIdentifier = 'nav>ul' 
+let galleryIdentifier = '.project-gallery'
 
-	$('ul.categories li').click(function(){
+// --> VARIABLES
+const navList = document.querySelector(navIdentifier)
+let activeFilter = null
 
-		if( $(this).hasClass("clicked") ){
-			
-			$(this).removeClass("clicked")
-			$('ul.links li').removeClass("inactive")
+// --> FUNCTIONS
+const filterImages = () => {
+  let galleryDiv = document.querySelectorAll(galleryIdentifier)
 
-		} else {
+  for (let li of navList.children) {
+    if (li.classList.contains('active')) {
+      activeFilter = li.dataset.filter    
+      break
+    } else {
+      activeFilter = null
+    }
+  }
 
-			var category = $(this).data('id');
+  for (let img of galleryDiv) {
+    let filtered = img.classList.contains(activeFilter)
+    if (activeFilter && filtered) {
+      img.classList.remove('inactive')
+    } else if (activeFilter && !filtered) {
+      img.classList.add('inactive')
+    } else {
+      img.classList.remove('inactive')
+    }
+  }
+}
 
-			console.log($);
+const filterHandler = (e) => {
+  let el = e.target
+  
+  for (let li of navList.children) {
+    if (li.dataset.filter == el.dataset.filter) {
+      li.classList.toggle('active')
+    } else {
+      li.classList.remove('active')
+    }
+  }
+  
+  filterImages()
+}
 
-			$('ul.links li').removeClass("active").addClass("inactive");
-			$('[data-id*='+category+']').removeClass("inactive").addClass("active");
-			$('ul.categories li').removeClass("clicked");
-			$(this).addClass("clicked");
+// --> WINDOW OPERATION
+window.onload = () => {
+  
+  for (let li of navList.children) {
+    li.addEventListener('click', filterHandler)
+  }
+}
 
-		}
 
-	});
 
-});
 
